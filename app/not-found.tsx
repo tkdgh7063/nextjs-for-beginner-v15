@@ -1,10 +1,10 @@
 import Navigation from "../components/navigation";
 
-export default function Hello() {
+export default function NotFound() {
   return (
     <div>
       <Navigation />
-      <h1>Hello NextJS</h1>
+      <h1>404 Not Found!</h1>
     </div>
   );
 }
