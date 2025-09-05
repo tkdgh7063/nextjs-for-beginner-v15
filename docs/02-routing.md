@@ -92,12 +92,16 @@ export default function NotFound() {
 
 ### usePathname
 
-The `usePathname` hook returns the current URL pathname in your Next.js application.
+### usePathname
 
-- Example usage: highlighting active navigation links or conditionally rendering content based on the current path.
-- Must be used inside a client component.
+The `usePathname` hook returns the current URL pathname in your Next.js application.  
+It must be used inside a **Client Component**, as reading the URL from a Server Component is not supported.  
+Using Client Components for this purpose is intentional and does not cause de-optimization; they are an integral part of Next.js's Server Components architecture.
+
+- Common use case: highlighting active navigation links or conditionally rendering content based on the current path.
 
 ```tsx
+"use client";
 import { usePathname } from "next/navigation";
 
 export default function Navigation() {
@@ -114,4 +118,10 @@ export default function Navigation() {
 }
 ```
 
-- Each page can import this component to display navigation based on the current route.
+- This Navigation component can be imported into any page to display the active route based on the current pathname.
+- `"use client"` is required to ensure the hook works correctly in the browser.
+
+#### Notes
+
+- Server Components cannot read the current URL.
+- This restriction is intentional to preserve layout state across page navigations.
