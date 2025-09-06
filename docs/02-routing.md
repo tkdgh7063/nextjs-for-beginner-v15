@@ -125,3 +125,35 @@ export default function Navigation() {
 
 - Server Components cannot read the current URL.
 - This restriction is intentional to preserve layout state across page navigations.
+
+## 3. SSR VS CSR
+
+### SSR(Server-Side Rendering)
+
+In SSR, the server generates the HTML for each request and sends it to the browser.
+
+- Faster initial load, since the browser receives ready-to-render HTML.
+- Better for **SEO (Search Engine Optimization)** because search engines can crawl the HTML content directly.
+- Heavier load on the server, as it needs to render HTML for every request.
+
+### CSR(Client-Side Rendering)
+
+In CSR, the browser first receives a minimal HTML file, then executes JavaScript to dynamically render the page.
+
+- Slower initial load, since rendering waits for JavaScript execution and data fetching.
+- After the initial load, navigation between pages feels very fast (single-page app behavior).
+- Dependant on JavaScript; the app won't function if it's disabled.
+- Less SEO-friendly unless special handling (like pre-rendering) is applied.
+
+---
+
+### Comparison Table
+
+|      Aspect       | SSR (Server-Side Rendering) | CSR (Client-Side Rendering) |
+| :---------------: | --------------------------- | --------------------------- |
+|   **Rendering**   | Server                      | Client                      |
+| **Initial Load**  | Fast                        | Slower                      |
+|  **Navigation**   | Slower                      | Fast                        |
+|      **SEO**      | Good                        | Poor                        |
+|  **Server Load**  | High                        | Low                         |
+| **JS Dependency** | Optional                    | Required                    |
