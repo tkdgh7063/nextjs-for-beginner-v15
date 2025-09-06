@@ -184,3 +184,57 @@ It essentially "**attaches React to the HTML**" so that components gain state, i
 - Hydration is required to make event listeners work. Without it, buttons or interactive components won't respond.
 - If JavaScript is disabled, the page will render but **React cannot hydrate**, so interactive parts (like forms, buttons, navigation) won't work.
 - Hydration bridges SSR and CSR: fast first load from SSR + interactivity from CSR.
+
+## 5. "use client"
+
+The `'use client'` directive marks a component as a **Client Component** in Next.js.
+Client Components are rendered on the server like all other components, but they are **hydrated** in the browser to become interactive. This is necessary when a component requires:
+
+- State management
+- Event handling
+- Access to browser APIs
+- Any interactive UI behavior
+
+Using `'use client'` **does not mean the component is rendered only on the client**. It still renders on the server for SSR, but it becomes interactive in the browser.
+
+### Usage
+
+Place `'use client'` **at the top of the file**, before any imports:
+
+```tsx
+"use client";
+
+import { useState } from "react";
+
+export default function Counter() {
+  const [count, setCount] = useState(0);
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={() => setCount(count + 1)}>Increment</button>
+    </div>
+  );
+}
+```
+
+### Server Components
+
+Components without `'use client'`.
+Used for:
+
+- Static content
+- Data fetching
+- SEO-friendly elements
+
+### Client Components
+
+Components with `'use client'`.
+Used for:
+
+- interactive elements
+- Components that require state, effects, or browser APIs
+
+### Component composition
+
+You can **nest Client Components inside Server Components** as needed, keeping server and client logic separate.
