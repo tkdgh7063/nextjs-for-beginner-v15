@@ -238,3 +238,86 @@ Used for:
 ### Component composition
 
 You can **nest Client Components inside Server Components** as needed, keeping server and client logic separate.
+
+## 6. Layouts
+
+Layouts in Next.js are **shared UI components** that wrap multiple pages. They preserve state, remain interactive on navigation, and do not re-render unnecessarily.
+
+---
+
+### 6.1 Creating a Layout
+
+A layout is defined by default exporting a React component from a `layout` file. The component should accept a `children` prop, which represents a page or nested layout.
+
+#### Example: Root Layout
+
+The **root layout** is the top-most layout in the root `app` directory and is **required**. It must include `<html>` and `<body>` tags.
+
+```tsx
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en">
+      <body>
+        {/* Shared UI, e.g., header, sidebar */}
+        <main>{children}</main>
+      </body>
+    </html>
+  );
+}
+```
+
+- The root layout is used for globally shared UI.
+- Avoid manually adding `<head>` tags (like `<title>` or `<meta>`). Use the **Metadata API** instead.
+- Multiple root layouts can exist using **route groups**, but navigating across them triggers a full page reload.
+- Root layouts can also exist under **dynamic segments**, e.g., `app/[lang]/layout.tsx` for i18n.
+
+---
+
+#### Props for Layout Components
+
+- `children` (required): Contains the page or nested layout components.
+- `params` (optional): A promise resolving to dynamic route parameteers for that layout.
+
+```tsx
+export default async function Layout({
+  children,
+  params,
+}: {
+  children: React.ReactNode;
+  params: Promise<{ team: string }>;
+}) {
+  const { team } = await params;
+}
+```
+
+---
+
+### 6.2 Nesting Layouts
+
+Layouts are **nested by default** based on folderr hierarchy. A parent layout wraps its child layouts via the `children` prop.
+
+- To create a layout for a specific route segment, add a `layout` file inside that segment's folder.
+- Example: For a `/blog` route:
+
+```
+├─ layout.tsx          # Root layout
+└─ blog/
+   ├─ layout.tsx       # Blog layout
+   ├─ page.tsx         # /blog page
+   └─ [slug]/page.tsx  # /blog/:slug page
+```
+
+- In this structure, `RootLayout` wraps `BlogLayout`, which in turn wraps the blog pages.
+- This allows shared UI to be preserved while creating route-specific layouts.
+
+---
+
+### Notes
+
+- Layouts enhance **code reuse** and **UI consistency** across multiple pages.
+- Nested layouts help organize route-specific UI without duplicating global elements.
+- Root layout is **mandatory** and prrovides the foundation for all nested layouts.
