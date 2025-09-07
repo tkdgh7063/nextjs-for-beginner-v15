@@ -280,7 +280,7 @@ export default function RootLayout({
 #### Props for Layout Components
 
 - `children` (required): Contains the page or nested layout components.
-- `params` (optional): A promise resolving to dynamic route parameteers for that layout.
+- `params` (optional): A promise resolving to dynamic route parameters for that layout.
 
 ```tsx
 export default async function Layout({
@@ -321,3 +321,102 @@ Layouts are **nested by default** based on folderr hierarchy. A parent layout wr
 - Layouts enhance **code reuse** and **UI consistency** across multiple pages.
 - Nested layouts help organize route-specific UI without duplicating global elements.
 - Root layout is **mandatory** and prrovides the foundation for all nested layouts.
+
+### 6.3 Route Groups
+
+Next.js **Route Groups** allow you to organize routes without affecting the URL structure.
+Folders wrapped in parentheses `()` are treated as route groups.
+
+#### Convention
+
+- Wrap a folder name with parentheses: `(foldername)`.
+- The folder is for organizational purposes only and is **not included** in the route's URL.
+
+#### Use Cases
+
+- Organize routes by team, concern, or feature.
+- Define multiple root layouts.
+- Opt certain route segments into sharing a layout while keeping others excluded.
+
+#### Caveats
+
+- **Full page load**: Navigating between routes using different root layouts triggers a full page reload.
+  Example: `/cart` uses `app/(shop)/layout.js` → `/blog` uses `app/(marketingg)/layout.js`.
+- **Conflicting paths**: Avoid routes in different groups resolving to the same URL.
+  Example: `(marketing)/about/page.js` and `(shop)/about/page.js` both resolving to `/about` causes errors.
+- **Top-level root layout**: If multiple root layouts exist without a top-level `layout.js`, ensure the home route (`/`) is defined in one of the groups, e.g., `app/(marketing)/page.js`.
+
+#### Notes
+
+- Layouts improve **code reuse** and **UI consistency**.
+- Nested layouts organize route-specific UI without duplicating global elements.
+- Root layout is **mandatory** and provides the foundation for nested layouts.
+
+---
+
+## 7. Metadata
+
+Next.js **Metadata** defines `<head>` information for pages and layouts.
+It can be **static** or **dynamic**, and only Server Components can export metadata. Client Components cannot.
+
+### Rules
+
+- Only `page` or `layout` files can export metadata.
+- Metadata in nested layouts is **merged**, not nested.
+- Always include default meta tags:
+
+```html
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+```
+
+### Static Metadata
+
+Define a static metadata object by exporting a `Metadata` object from a layout or page:
+
+#### 1. Simple title
+
+```tsx
+// app/blog/layout.tsx
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "My Blog",
+  description: "...",
+};
+
+export default function Page() {}
+```
+
+- `title: "My Blog"`: uses the same title for all pages.
+
+#### 2. Using template and default
+
+```tsx
+// app/blog/layout.tsx
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: {
+    template: "%s | My Blog", // placeholder for the page-specific title
+    default: "My Blog", // default title when a page doesn't define one
+  },
+  description: "Blog about ...",
+};
+
+export default function Page() {}
+```
+
+- `template`: `%s` is replaced with the page-specific title, allowing a consistent pattern.
+- `default`: the default title used if a page doesn't define one.
+
+### Dynamic Metadata
+
+- Use `generateMetadata` function to generate metadata dynamically based on route parameters or API data.
+- Only supported in Server Components.
+
+### Notes
+
+- Metadata ensures SEO optimization and proper `<head>` management.
+- `title`, `description`, and other meta tags are automatically generated.
+- Using **templates** in titles allows per-page customization while keeping a common pattern.
