@@ -42,7 +42,7 @@ export default function Page() {
 
 To define a custom route, create a folder with the route name inside `app/` and add a `page.tsx` file.
 
-**Example:** Creating an `/about-us` page
+**Example**: Creating an `/about-us` page
 
 ```
 app/
@@ -67,10 +67,6 @@ Next.js provides **special file conventions** for handling 404 errors within a s
 
 The `not-found.tsx` file is rendered automatically when a route under its segment is not found, or when the `notFound()` function from `next/navigation` is called.
 
-- Place `not-found.tsx` inside the relevant route segment folder, e.g., `app/not-found.tsx` or `app/blog/not-found.tsx`.
-- Next.js will render this file for unknown routes in that segment.
-- For streamed responses, a `200` HTTP status code is returned; for non-streamed responses, `404` is returned.
-
 ```tsx
 // app/not-found.tsx
 export default function NotFound() {
@@ -78,7 +74,9 @@ export default function NotFound() {
 }
 ```
 
+- Place `not-found.tsx` inside the relevant route segment folder, e.g., `app/not-found.tsx` or `app/blog/not-found.tsx`.
 - Using `not-found.tsx` ensures users see a friendly message instead of a blank screen or server error.
+- For streamed responses, the HTTP status may be `200`; for non-streamed responses, a `404` status is returned.
 
 ---
 
@@ -92,11 +90,10 @@ export default function NotFound() {
 
 ### usePathname
 
-### usePathname
-
 The `usePathname` hook returns the current URL pathname in your Next.js application.  
 It must be used inside a **Client Component**, as reading the URL from a Server Component is not supported.  
-Using Client Components for this purpose is intentional and does not cause de-optimization; they are an integral part of Next.js's Server Components architecture.
+Using a Client Component here is intentional and does not cause performance issues—it is part of the Next.js Serverr Components architecture.
+This design also helps preserve layout state during navigation.
 
 - Common use case: highlighting active navigation links or conditionally rendering content based on the current path.
 
@@ -142,7 +139,7 @@ In CSR, the browser first receives a minimal HTML file, then executes JavaScript
 
 - Slower initial load, since rendering waits for JavaScript execution and data fetching.
 - After the initial load, navigation between pages feels very fast (single-page app behavior).
-- Dependant on JavaScript; the app won't function if it's disabled.
+- Dependent on JavaScript; the app won't function if it's disabled.
 - Less SEO-friendly unless special handling (like pre-rendering) is applied.
 
 ---
@@ -195,7 +192,7 @@ Client Components are rendered on the server like all other components, but they
 - Access to browser APIs
 - Any interactive UI behavior
 
-Using `'use client'` **does not mean the component is rendered only on the client**. It still renders on the server for SSR, but it becomes interactive in the browser.
+`'use client'` does **not** mean the component is rendered only on the client. It is still pre-rendered on the server but becomes interactive after hydration in the browser.
 
 ### Usage
 
@@ -298,7 +295,7 @@ export default async function Layout({
 
 ### 6.2 Nesting Layouts
 
-Layouts are **nested by default** based on folderr hierarchy. A parent layout wraps its child layouts via the `children` prop.
+Layouts are **nested by default** based on folder hierarchy. A parent layout wraps its child layouts via the `children` prop.
 
 - To create a layout for a specific route segment, add a `layout` file inside that segment's folder.
 - Example: For a `/blog` route:
@@ -320,7 +317,7 @@ Layouts are **nested by default** based on folderr hierarchy. A parent layout wr
 
 - Layouts enhance **code reuse** and **UI consistency** across multiple pages.
 - Nested layouts help organize route-specific UI without duplicating global elements.
-- Root layout is **mandatory** and prrovides the foundation for all nested layouts.
+- Root layout is **mandatory** and provides the foundation for all nested layouts.
 
 ### 6.3 Route Groups
 
@@ -425,7 +422,7 @@ export default function Page() {}
 
 ### Convention
 
-A **Dynamic Segment** is created by wrapping a folder name in square bracket: `[ ]`.
+A **Dynamic Segment** is created by wrapping a folder name in square bracket `[ ]`.
 
 For example:
 `app/blog/[slug]/page.tsx` → `[slug]` is the dynamic segment for blog posts.
