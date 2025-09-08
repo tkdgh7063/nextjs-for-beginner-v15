@@ -420,3 +420,76 @@ export default function Page() {}
 - Metadata ensures SEO optimization and proper `<head>` management.
 - `title`, `description`, and other meta tags are automatically generated.
 - Using **templates** in titles allows per-page customization while keeping a common pattern.
+
+## 8. Dynamic Route Segments
+
+### Convention
+
+A **Dynamic Segment** is created by wrapping a folder name in square bracket: `[ ]`.
+
+For example:
+`app/blog/[slug]/page.tsx` → `[slug]` is the dynamic segment for blog posts.
+
+```tsx
+// app/blog/[slug]/page.tsx
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  return <div>My Post: {slug}</div>;
+}
+```
+
+- Dynamic segments are passed as the `params` prop to:
+  - `layout`
+  - `page`
+  - `route`
+  - `generateMetadata`
+
+---
+
+### In Client Components
+
+In a **Client Component page**, dynamic segments can be accessed in two ways:
+
+#### 1. Using the `use` hook
+
+```tsx
+// app/blog/[slug]/page.tsx
+"use client";
+import { use } from "react";
+
+export default function BlogPostPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = use(params);
+  return <p>{slug}</p>;
+}
+```
+
+#### 2. Using the `useParams` hook
+
+Dynamic segments can also be accessed anywhere in the Client Component tree:
+
+```tsx
+"use client";
+import { useParams } from "next/navigation";
+
+export default function BlogPostPage() {
+  const params = useParams();
+  return <p>{params.slug}</p>;
+}
+```
+
+---
+
+### Behavior
+
+- The `params` prop is a **Promise** in Next.js 15.
+  - Use `async`/`await` (in Server Components) or the `use` hook (in Client Components).
+- In Next.js 14 and earlier, `params` was synchronous.
+  - Synchronous access still works in Next.js 15 for backward compatibility, but will be **deprecated in the future**.
