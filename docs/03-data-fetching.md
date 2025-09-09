@@ -153,6 +153,8 @@ export default async function Page() {
 }
 ```
 
+---
+
 ### 1.3 Comparing Client and Server Components
 
 |       Aspect       | Client Components                                        | Server Components                                           |
@@ -163,3 +165,34 @@ export default async function Page() {
 |    **Caching**     | Managed by libraries (SWR, React Query)                  | Built-in caching by Next.js `fetch` (default: cached)       |
 |   **Rendering**    | Hydrated on the client, may cause larger bundle sizes    | Rendered on the server, reduces bundle size                 |
 |   **Use Cases**    | Interactive UI, event handlers, animations, client state | Data fetching, heavy computation, secure API/database calls |
+
+---
+
+## 2. Streaming
+
+When using `async/await` in Server Components, Next.js opts into **dynamic rendering**. This means the data is fetched and rendered on the server for **every user request**. If a request is slow, the entire route will be blocked from rendering.
+
+To improve **initial load time** and user experience, you can use **streaming** to break up the page's HTML into smaller chunks and progressively send them from the server to the client.
+
+There are two ways to implement streaming:
+
+1. Using a `loading.tsx` file.
+2. Wrapping a component with `<Suspense>`
+
+### 2.1 Using `loading.tsx`
+
+You can create a `loading.tsx` file in the same folder as your page to stream the **entire page** while data is being fetched. For example, to stream `app/blog/page.tsx`, add `loading.tsx` inside the `app/blog` folder:
+
+```tsx
+// app/blog/loading.tsx
+export default function Loading() {
+  // Define the loading UI here
+  return <div>Loading...</div>;
+}
+```
+
+On navigation, the user immediately sees the **layout and a loading state**, while the page is being rendered. Once the server finishes rendering, the content is automatically swapped in.
+
+Behind-the-scenes, `loading.tsx` is nested inside `layout.tsx` and automatically wraps `page.tsx` (and its children) in a `<Suspense>` boundary.
+
+This approach works well for **route segments** (layouts and pages). For more granular streaming at the component level, you can use `<Suspense>` directly.

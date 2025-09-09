@@ -8,7 +8,7 @@ const URL = "https://nomad-movies.nomadcoders.workers.dev/movies";
 
 async function getMovies() {
   await new Promise((resolve) => setTimeout(resolve, 2000));
-  const response = await fetch(URL, { cache: "no-cache" });
+  const response = await fetch(URL);
   const json = await response.json();
   return json;
 }
