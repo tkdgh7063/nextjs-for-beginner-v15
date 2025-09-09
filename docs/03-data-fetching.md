@@ -94,3 +94,72 @@ export default function BlogPage() {
   );
 }
 ```
+
+### 1.2 Server Components
+
+There are two ways to fetch data in Server Components:
+
+1. Using the `fetch` API
+2. Using an ORM or database client
+
+---
+
+#### 1) Fetching with the `fetch` API
+
+In Server Components, you can make your component asynchrounous and directly `await` the `fetch` call:
+
+```tsx
+// app/blog/page.tsx
+export default async function Page() {
+  const data = await fetch("https://api.vercel.app/blog");
+  const posts = await data.json();
+  return (
+    <ul>
+      {posts.map((post) => (
+        <li key={post.id}>{post.title}</li>
+      ))}
+    </ul>
+  );
+}
+```
+
+##### Good to know
+
+- Unlike in Client Components, you don't need hooks here — you can await data directly.
+- `fetch` requests are cached by default in Next.js. The prerendered output will also be cached for better performance.
+- To opt out of caching and enable **dynamic rendering**, use`{cache: "no-store"}`.
+- For debugging in development, you can log `fetch` requests using the built-in logging options.
+- **Security note**: Since Server Components run on the server, the `fetch` code and any secrets used in it are never sent to the client. This makes it safe to include API keys or database queries directly in these components.
+
+---
+
+#### 2) Fetching with an ORM or database
+
+Because Server Components run on the server, you can query your database or use an ORM directly:
+
+```tsx
+// app/blog/page.tsx
+import { db, posts } from "@/lib/db";
+
+export default async function Page() {
+  const allPosts = await db.select().from(posts);
+  return (
+    <ul>
+      {allPosts.map((post) => (
+        <li key={post.id}>{post.title}</li>
+      ))}
+    </ul>
+  );
+}
+```
+
+### 1.3 Comparing Client and Server Components
+
+|       Aspect       | Client Components                                        | Server Components                                           |
+| :----------------: | -------------------------------------------------------- | ----------------------------------------------------------- |
+|   **Execution**    | Runs in the browser (client-side)                        | Runs on the server                                          |
+| **Data Fetching**  | Requires hooks (`use`, SWR, React Query, etc.)           | Can directly `await` `fetch` or query the database          |
+| **Access to APIs** | Can use browser APIs (e.g., `window`, `localStorage`)    | Can access server-side APIs, ORMs, and databases            |
+|    **Caching**     | Managed by libraries (SWR, React Query)                  | Built-in caching by Next.js `fetch` (default: cached)       |
+|   **Rendering**    | Hydrated on the client, may cause larger bundle sizes    | Rendered on the server, reduces bundle size                 |
+|   **Use Cases**    | Interactive UI, event handlers, animations, client state | Data fetching, heavy computation, secure API/database calls |
