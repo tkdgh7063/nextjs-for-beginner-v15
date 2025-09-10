@@ -231,3 +231,56 @@ export default function BlogPage() {
 - `<Suspense>` can be used **inside the Server Components or Client Components**.
 - This approach improves **perceived performance** by letting the user see stable content immediately, while other parts load progressively.
 - You can **nest multiple `<Suspense>` boundaries** for even more granular streaming of different components.
+
+---
+
+## 3. Error Handling
+
+### 3.1 Handling Uncaught Exceptions
+
+#### 1) Nested Error Boundaries
+
+Next.js uses **error boundaries** to handle uncaught exceptions.
+Error boundaries catch errors in their **child components** and display a **fallback UI** instead of the component tree that crashed.
+
+You can create an error boundary by adding an `error.tsx` file inside a **route segment** and exporting a React component:
+
+```tsx
+// app/dashboard/error.tsx
+"use client"; // Error boundaries must be Client Components
+
+import { useEffect } from "react";
+
+export default function Error({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string };
+  reset: () => void;
+}) {
+  useEffect(() => {
+    console.error(error);
+  }, [error]);
+
+  return (
+    <div>
+      <h2>Something went wrong!</h2>
+      <button
+        onClick={
+          // Attemp to recover by trying to re=render the segment
+          () => reset()
+        }>
+        Try again
+      </button>
+    </div>
+  );
+}
+```
+
+**Key points:**
+
+- Errors **bubble up** to the nearest parent error boundary.
+  → This allows for **granular error handling** by placing `error.tsx` files at different levels in the route hierarchy.
+- Error boundaries **do not catch errors inside event handlers**.
+  → They are designed to catch errors **during rendering** and show a fallback UI instead of crashing the whole app.
+- `error.tsx` must be a **Client Component** because error boundaries rely on hooks like `useEffect`.
