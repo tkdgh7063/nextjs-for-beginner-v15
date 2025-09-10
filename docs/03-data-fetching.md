@@ -196,3 +196,38 @@ On navigation, the user immediately sees the **layout and a loading state**, whi
 Behind-the-scenes, `loading.tsx` is nested inside `layout.tsx` and automatically wraps `page.tsx` (and its children) in a `<Suspense>` boundary.
 
 This approach works well for **route segments** (layouts and pages). For more granular streaming at the component level, you can use `<Suspense>` directly.
+
+### 2.2 Using `<Suspense>`
+
+`<Suspense>` allows you to **stream specific parts of a page more granularly**.
+For example, you can immediately render any content **outside the `<Suspense>` boundary**, while streaming content **inside the boundary** (like a list of blog posts) once it's ready.
+
+```tsx
+// app/blog/page.tsx
+import { Suspense } from "react";
+import BlogList from "@/components/BlogList";
+import BlogListSkeleton from "@/components/BlogListSkeleton";
+
+export default function BlogPage() {
+  return (
+    <div>
+      <header>
+        <h1>Welcome to the Blog</h1>
+        <p>Read the latest posts below.</p>
+      </header>
+      <main>
+        <Suspense fallback={<BlogListSkeleton />}>
+          <BlogList />
+        </Suspense>
+      </main>
+    </div>
+  );
+}
+```
+
+**Key points:**
+
+- The `fallback` prop specifies what to render while the content inside `<Suspense>` is loading.
+- `<Suspense>` can be used **inside the Server Components or Client Components**.
+- This approach improves **perceived performance** by letting the user see stable content immediately, while other parts load progressively.
+- You can **nest multiple `<Suspense>` boundaries** for even more granular streaming of different components.
