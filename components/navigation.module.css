@@ -1,0 +1,12 @@
+.nav {
+  background-color: limegreen;
+  padding: 20px 50px;
+}
+
+.list {
+  height: 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: flex-start;
+}
