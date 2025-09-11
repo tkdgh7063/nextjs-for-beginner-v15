@@ -1,12 +1,30 @@
 .nav {
   background-color: limegreen;
-  padding: 20px 50px;
+  width: 25%;
+  height: 6%;
+  border-radius: 50px;
+  position: fixed;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
 }
 
-.list {
-  height: 100px;
+.nav ul {
+  height: 100%;
   display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: flex-start;
+  justify-content: center;
+  align-items: center;
+  gap: 50px;
+  font-size: 20px;
+}
+
+.nav ul li {
+  list-style: none;
+  transform: none;
+  transition: all 0.1s ease-in-out;
+}
+
+.nav ul li:hover {
+  transform: scale(1.05);
 }

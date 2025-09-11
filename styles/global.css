@@ -124,6 +124,7 @@ table {
 }
 
 body {
+  padding-top: 110px;
   font-family: "Times New Roman", Times, serif;
   background-color: bisque;
   color: royalblue;
